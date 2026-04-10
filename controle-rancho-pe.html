@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle Rancho PE</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde: #1D9E75;
+    --verde-escuro: #0F6E56;
+    --verde-claro: #E1F5EE;
+    --verde-medio: #5DCAA5;
+    --terra: #BA7517;
+    --terra-claro: #FAEEDA;
+    --terra-escuro: #854F0B;
+    --vermelho: #E24B4A;
+    --vermelho-claro: #FCEBEB;
+    --bg: #f5f2ed;
+    --bg2: #fff;
+    --texto: #1a1a1a;
+    --texto2: #5a5a5a;
+    --borda: rgba(0,0,0,0.1);
+    --radius: 14px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--texto);
+    min-height: 100vh;
+    font-size: 15px;
+  }
+
+  h1, h2, h3, .brand {
+    font-family: 'Syne', sans-serif;
+  }
+
+  /* === LOGIN === */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #0F6E56 0%, #1D9E75 50%, #5DCAA5 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #login-screen::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    top: -200px; right: -200px;
+  }
+
+  #login-screen::after {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+    bottom: -150px; left: -100px;
+  }
+
+  .login-card {
+    background: white;
+    border-radius: 24px;
+    padding: 48px 44px;
+    width: 420px;
+    max-width: 95vw;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 1;
+  }
+
+  .login-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .logo-icon {
+    width: 48px; height: 48px;
+    background: var(--verde-escuro);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+
+  .login-logo h1 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--verde-escuro);
+    line-height: 1.1;
+  }
+
+  .login-logo span {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--texto2);
+    display: block;
+  }
+
+  .login-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #111;
+  }
+
+  .login-sub {
+    color: var(--texto2);
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  .field {
+    margin-bottom: 18px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--texto2);
+    margin-bottom: 6px;
+  }
+
+  .field input, .field select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.2s;
+    background: #fafafa;
+    color: var(--texto);
+  }
+
+  .field input:focus, .field select:focus {
+    outline: none;
+    border-color: var(--verde);
+    background: white;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+
+  .btn:active { transform: scale(0.97); }
+
+  .btn-primary {
+    background: var(--verde-escuro);
+    color: white;
+    width: 100%;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 6px;
+  }
+
+  .btn-primary:hover { background: #0a5c47; }
+
+  .btn-secondary {
+    background: var(--verde-claro);
+    color: var(--verde-escuro);
+  }
+
+  .btn-secondary:hover { background: #c0e8d9; }
+
+  .btn-danger {
+    background: var(--vermelho-claro);
+    color: var(--vermelho);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--borda);
+    color: var(--texto2);
+  }
+
+  .btn-outline:hover { background: #f5f5f5; }
+
+  .error-msg {
+    background: var(--vermelho-claro);
+    color: var(--vermelho);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* === APP === */
+  #app-screen { display: none; }
+
+  .topbar {
+    background: var(--verde-escuro);
+    color: white;
+    padding: 0 24px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  }
+
+  .topbar-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+  }
+
+  .topbar-brand .dot {
+    width: 8px; height: 8px;
+    background: var(--verde-medio);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .topbar-user {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .btn-logout {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 5px 12px;
+    font-size: 13px;
+    border-radius: 7px;
+    cursor: pointer;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s;
+  }
+
+  .btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+  .tabs {
+    background: white;
+    border-bottom: 1px solid var(--borda);
+    display: flex;
+    padding: 0 24px;
+    overflow-x: auto;
+  }
+
+  .tab {
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--texto2);
+    cursor: pointer;
+    border-bottom: 2.5px solid transparent;
+    white-space: nowrap;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .tab:hover { color: var(--verde); }
+
+  .tab.active {
+    color: var(--verde-escuro);
+    border-bottom-color: var(--verde-escuro);
+    font-weight: 600;
+  }
+
+  .tab-icon { font-size: 16px; }
+
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 24px;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .section-sub {
+    color: var(--texto2);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  /* === DASHBOARD === */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .kpi {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--borda);
+  }
+
+  .kpi-label {
+    font-size: 12px;
+    color: var(--texto2);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+
+  .kpi-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--verde-escuro);
+  }
+
+  .kpi-value.neg { color: var(--vermelho); }
+  .kpi-value.warn { color: var(--terra); }
+
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--texto2);
+    margin-top: 4px;
+  }
+
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--borda);
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--texto2);
+    border-bottom: 1px solid var(--borda);
+    background: #fafaf8;
+  }
+
+  td {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    color: var(--texto);
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafaf8; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .badge-green { background: var(--verde-claro); color: var(--verde-escuro); }
+  .badge-red { background: var(--vermelho-claro); color: var(--vermelho); }
+  .badge-yellow { background: var(--terra-claro); color: var(--terra-escuro); }
+
+  /* === FORMS === */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .form-actions {
+    margin-top: 22px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .success-msg {
+    background: var(--verde-claro);
+    color: var(--verde-escuro);
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    display: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    display: none;
+  }
+
+  .loading-spinner-lg {
+    width: 44px; height: 44px;
+    border: 3px solid var(--verde-claro);
+    border-top-color: var(--verde-escuro);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-bottom: 14px;
+  }
+
+  .loading-text {
+    font-size: 14px;
+    color: var(--texto2);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--texto2);
+  }
+
+  .empty-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+
+  .diff-pos { color: var(--verde); font-weight: 600; }
+  .diff-neg { color: var(--vermelho); font-weight: 600; }
+  .diff-zero { color: var(--texto2); }
+
+  .tag-date {
+    font-size: 11px;
+    background: #f0ede8;
+    color: var(--texto2);
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-weight: 500;
+  }
+
+  .controle-banner {
+    background: linear-gradient(135deg, var(--verde-escuro), var(--verde));
+    color: white;
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .controle-banner h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .controle-banner p { font-size: 13px; opacity: 0.85; }
+
+  .btn-white {
+    background: white;
+    color: var(--verde-escuro);
+    padding: 10px 20px;
+    border-radius: 9px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+
+  .btn-white:hover { opacity: 0.9; }
+  .btn-white:active { transform: scale(0.97); }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading">
+  <div class="loading-spinner-lg"></div>
+  <div class="loading-text" id="loading-text">Carregando...</div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-icon">🌾</div>
+      <div>
+        <h1>Controle Rancho PE</h1>
+        <span>Sistema de Gestão de Estoque</span>
+      </div>
+    </div>
+    <h2 class="login-title">Bem-vindo de volta</h2>
+    <p class="login-sub">Faça login para acessar o sistema</p>
+    <div class="field">
+      <label>Usuário</label>
+      <input type="text" id="login-user" placeholder="Digite seu usuário" />
+    </div>
+    <div class="field">
+      <label>Senha</label>
+      <input type="password" id="login-pass" placeholder="Digite sua senha" />
+    </div>
+    <div class="error-msg" id="login-error">❌ Usuário ou senha incorretos.</div>
+    <button class="btn btn-primary" onclick="doLogin()">
+      <span id="login-btn-text">Entrar</span>
+      <div class="spinner" id="login-spinner"></div>
+    </button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-screen">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <span>🌾</span>
+      <span>Controle Rancho PE</span>
+      <span class="dot"></span>
+    </div>
+    <div class="topbar-user">
+      <div class="avatar" id="user-avatar">U</div>
+      <span id="user-name-display">Usuário</span>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('dashboard')">
+      <span class="tab-icon">📊</span> Dashboard
+    </div>
+    <div class="tab" onclick="showTab('vendas')">
+      <span class="tab-icon">🛒</span> Registrar Venda
+    </div>
+    <div class="tab" onclick="showTab('inventario')">
+      <span class="tab-icon">📦</span> Inventário
+    </div>
+    <div class="tab" onclick="showTab('controle')">
+      <span class="tab-icon">📋</span> Controle
+    </div>
+    <div class="tab" onclick="showTab('historico')">
+      <span class="tab-icon">📜</span> Histórico
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <h2 class="section-title">Dashboard</h2>
+      <p class="section-sub" id="dash-date">Carregando dados do dia...</p>
+
+      <div class="controle-banner">
+        <div>
+          <h3>Calcular Controle Diário</h3>
+          <p>Atualiza a tabela de controle com os dados de hoje</p>
+        </div>
+        <button class="btn-white" onclick="calcularControle()">⚙️ Calcular Agora</button>
+      </div>
+
+      <div class="kpi-grid" id="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Total Vendido (un.)</div><div class="kpi-value" id="kpi-qtd">—</div></div>
+        <div class="kpi"><div class="kpi-label">Receita do Dia</div><div class="kpi-value" id="kpi-receita">—</div></div>
+        <div class="kpi"><div class="kpi-label">Estoque Esperado</div><div class="kpi-value" id="kpi-esperado">—</div></div>
+        <div class="kpi"><div class="kpi-label">Estoque Real</div><div class="kpi-value" id="kpi-real">—</div></div>
+        <div class="kpi"><div class="kpi-label">Diferença Total</div><div class="kpi-value" id="kpi-dif">—</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📦 Controle por Produto — Hoje</div>
+        <div id="table-dash-wrap">
+          <div class="empty-state"><div class="empty-icon">📊</div><p>Clique em "Calcular Agora" para ver os dados</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VENDAS -->
+    <div class="page" id="page-vendas">
+      <h2 class="section-title">Registrar Venda</h2>
+      <p class="section-sub">Informe os dados da venda realizada</p>
+
+      <div class="card">
+        <div class="form-grid">
+          <div class="field">
+            <label>Produto</label>
+            <select id="venda-produto">
+              <option value="">Selecione o produto...</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Quantidade</label>
+            <input type="number" id="venda-qtd" min="1" placeholder="Ex: 5" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Usuário Responsável</label>
+          <input type="text" id="venda-usuario" readonly style="background:#f5f5f5;" />
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="registrarVenda()" style="width:auto; padding: 11px 28px;">
+            <span id="venda-btn-text">✅ Registrar Venda</span>
+            <div class="spinner" id="venda-spinner"></div>
+          </button>
+          <div class="success-msg" id="venda-success">✅ Venda registrada com sucesso!</div>
+          <div class="error-msg" id="venda-error" style="display:none; margin-top:0;">Erro ao registrar venda.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🛒 Vendas de Hoje</div>
+        <div id="table-vendas-hoje"></div>
+      </div>
+    </div>
+
+    <!-- INVENTÁRIO -->
+    <div class="page" id="page-inventario">
+      <h2 class="section-title">Registro de Inventário</h2>
+      <p class="section-sub">Informe o estoque real contado para cada produto</p>
+
+      <div class="card">
+        <div class="form-grid">
+          <div class="field">
+            <label>Produto</label>
+            <select id="inv-produto">
+              <option value="">Selecione o produto...</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Estoque Real (contado)</label>
+            <input type="number" id="inv-estoque" min="0" placeholder="Quantidade contada" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="registrarInventario()" style="width:auto; padding: 11px 28px;">
+            <span id="inv-btn-text">📦 Registrar Inventário</span>
+            <div class="spinner" id="inv-spinner"></div>
+          </button>
+          <div class="success-msg" id="inv-success">✅ Inventário registrado!</div>
+          <div class="error-msg" id="inv-error" style="display:none; margin-top:0;">Erro ao registrar.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📦 Inventário de Hoje</div>
+        <div id="table-inv-hoje"></div>
+      </div>
+    </div>
+
+    <!-- CONTROLE -->
+    <div class="page" id="page-controle">
+      <h2 class="section-title">Controle de Estoque</h2>
+      <p class="section-sub">Resultado do cálculo diário de controle</p>
+
+      <div class="controle-banner">
+        <div>
+          <h3>Recalcular Controle</h3>
+          <p>Reprocessa todos os dados do dia atual</p>
+        </div>
+        <button class="btn-white" onclick="calcularControle()">⚙️ Calcular</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Tabela de Controle — Hoje</div>
+        <div id="table-controle-wrap">
+          <div class="empty-state"><div class="empty-icon">📋</div><p>Nenhum dado calculado ainda hoje</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTÓRICO -->
+    <div class="page" id="page-historico">
+      <h2 class="section-title">Histórico</h2>
+      <p class="section-sub">Consulte vendas e inventários anteriores</p>
+
+      <div class="card">
+        <div class="card-title">🛒 Últimas Vendas</div>
+        <div id="table-hist-vendas">
+          <div class="empty-state"><div class="empty-icon">🛒</div><p>Carregando...</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📦 Últimos Inventários</div>
+        <div id="table-hist-inv">
+          <div class="empty-state"><div class="empty-icon">📦</div><p>Carregando...</p></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbwPVHV8qGVNbpAd1E5fPp_W4V_C4x-ghws9RmRaXC5r9YD6CPILB57RXTnNlqb3Zsuv/exec';
+
+let currentUser = null;
+let produtos = [];
+let vendas = [];
+let inventario = [];
+let controle = [];
+
+function hoje() {
+  return new Date().toLocaleDateString('pt-BR');
+}
+
+function hojeISO() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function showLoading(msg='Carregando...') {
+  document.getElementById('loading').style.display = 'flex';
+  document.getElementById('loading-text').textContent = msg;
+}
+
+function hideLoading() {
+  document.getElementById('loading').style.display = 'none';
+}
+
+async function apiFetch(params) {
+  const url = API + '?' + new URLSearchParams(params);
+  const res = await fetch(url);
+  return res.json();
+}
+
+async function apiPost(data) {
+  const res = await fetch(API, {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+// LOGIN
+async function doLogin() {
+  const usuario = document.getElementById('login-user').value.trim();
+  const senha = document.getElementById('login-pass').value.trim();
+  if (!usuario || !senha) return;
+
+  document.getElementById('login-btn-text').textContent = 'Entrando...';
+  document.getElementById('login-spinner').style.display = 'block';
+  document.getElementById('login-error').style.display = 'none';
+
+  try {
+    const res = await apiFetch({ action: 'login', usuario, senha });
+    if (res.success) {
+      currentUser = usuario;
+      document.getElementById('user-avatar').textContent = usuario[0].toUpperCase();
+      document.getElementById('user-name-display').textContent = usuario;
+      document.getElementById('venda-usuario').value = usuario;
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app-screen').style.display = 'block';
+      await loadAllData();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+    }
+  } catch(e) {
+    document.getElementById('login-error').textContent = '❌ Erro de conexão. Tente novamente.';
+    document.getElementById('login-error').style.display = 'block';
+  }
+
+  document.getElementById('login-btn-text').textContent = 'Entrar';
+  document.getElementById('login-spinner').style.display = 'none';
+}
+
+document.getElementById('login-pass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+function doLogout() {
+  currentUser = null;
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+}
+
+// LOAD DATA
+async function loadAllData() {
+  showLoading('Carregando dados...');
+  try {
+    const res = await apiFetch({ action: 'getAllData' });
+    if (res.success) {
+      produtos = res.data.produtos || [];
+      vendas = res.data.vendas || [];
+      inventario = res.data.inventario || [];
+      controle = res.data.controle || [];
+    }
+    populateSelects();
+    renderDashboard();
+    renderVendasHoje();
+    renderInvHoje();
+    renderControle();
+    renderHistorico();
+  } catch(e) {
+    console.error(e);
+  }
+  hideLoading();
+}
+
+function populateSelects() {
+  const opts = produtos.map(p => `<option value="${p.Produto}">${p.Produto} (R$ ${parseFloat(p.Preco||0).toFixed(2)})</option>`).join('');
+  document.getElementById('venda-produto').innerHTML = '<option value="">Selecione...</option>' + opts;
+  document.getElementById('inv-produto').innerHTML = '<option value="">Selecione...</option>' + opts;
+}
+
+// DASHBOARD
+function renderDashboard() {
+  const d = hoje();
+  document.getElementById('dash-date').textContent = `Atualizado em: ${d}`;
+
+  const controleHoje = controle.filter(c => normDate(c.Data) === d);
+  const vendasHoje = vendas.filter(v => normDate(v.Data) === d);
+
+  let totalQtd = 0, totalReceita = 0, totalEsperado = 0, totalReal = 0, totalDif = 0;
+
+  vendasHoje.forEach(v => {
+    const qtd = parseFloat(v.Quantidade) || 0;
+    totalQtd += qtd;
+    const prod = produtos.find(p => p.Produto === v.Produto);
+    totalReceita += qtd * (parseFloat(prod?.Preco) || 0);
+  });
+
+  controleHoje.forEach(c => {
+    totalEsperado += parseFloat(c.Esperado) || 0;
+    totalReal += parseFloat(c.Real) || 0;
+    totalDif += parseFloat(c.Diferenca) || 0;
+  });
+
+  document.getElementById('kpi-qtd').textContent = totalQtd;
+  document.getElementById('kpi-receita').textContent = 'R$ ' + totalReceita.toLocaleString('pt-BR', {minimumFractionDigits:2});
+  document.getElementById('kpi-esperado').textContent = totalEsperado || '—';
+  document.getElementById('kpi-real').textContent = totalReal || '—';
+
+  const difEl = document.getElementById('kpi-dif');
+  difEl.textContent = controleHoje.length ? totalDif : '—';
+  difEl.className = 'kpi-value' + (totalDif < 0 ? ' neg' : totalDif > 0 ? '' : '');
+
+  if (controleHoje.length === 0) {
+    document.getElementById('table-dash-wrap').innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div><p>Clique em "Calcular Agora" para ver os dados de hoje</p></div>`;
+    return;
+  }
+
+  let html = `<table><thead><tr><th>Produto</th><th>Vendido</th><th>Esperado</th><th>Real</th><th>Diferença</th></tr></thead><tbody>`;
+  controleHoje.forEach(c => {
+    const dif = parseFloat(c.Diferenca) || 0;
+    const difClass = dif < 0 ? 'diff-neg' : dif > 0 ? 'diff-pos' : 'diff-zero';
+    const badge = dif < 0 ? `<span class="badge badge-red">${dif}</span>` : dif > 0 ? `<span class="badge badge-yellow">+${dif}</span>` : `<span class="badge badge-green">0</span>`;
+    html += `<tr><td><strong>${c.Produto}</strong></td><td>${c.Vendido||0}</td><td>${c.Esperado||0}</td><td>${c.Real||0}</td><td>${badge}</td></tr>`;
+  });
+  html += `</tbody></table>`;
+  document.getElementById('table-dash-wrap').innerHTML = html;
+}
+
+function normDate(d) {
+  if (!d) return '';
+  if (d.includes('/')) return d;
+  const parts = d.split('-');
+  if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  return d;
+}
+
+// VENDAS
+async function registrarVenda() {
+  const produto = document.getElementById('venda-produto').value;
+  const qtd = document.getElementById('venda-qtd').value;
+  if (!produto || !qtd) return alert('Preencha produto e quantidade.');
+
+  document.getElementById('venda-btn-text').textContent = 'Salvando...';
+  document.getElementById('venda-spinner').style.display = 'block';
+  document.getElementById('venda-error').style.display = 'none';
+  document.getElementById('venda-success').style.display = 'none';
+
+  try {
+    const res = await apiPost({
+      action: 'addVenda',
+      data: { Data: hojeISO(), Usuario: currentUser, Produto: produto, Quantidade: parseFloat(qtd) }
+    });
+
+    if (res.success) {
+      document.getElementById('venda-success').style.display = 'flex';
+      document.getElementById('venda-qtd').value = '';
+      document.getElementById('venda-produto').value = '';
+      await loadAllData();
+      setTimeout(() => document.getElementById('venda-success').style.display = 'none', 3000);
+    } else {
+      document.getElementById('venda-error').textContent = '❌ ' + (res.error || 'Erro ao registrar.');
+      document.getElementById('venda-error').style.display = 'block';
+    }
+  } catch(e) {
+    document.getElementById('venda-error').textContent = '❌ Erro de conexão.';
+    document.getElementById('venda-error').style.display = 'block';
+  }
+
+  document.getElementById('venda-btn-text').textContent = '✅ Registrar Venda';
+  document.getElementById('venda-spinner').style.display = 'none';
+}
+
+function renderVendasHoje() {
+  const d = hoje();
+  const hoje_vendas = vendas.filter(v => normDate(v.Data) === d);
+  const el = document.getElementById('table-vendas-hoje');
+  if (!hoje_vendas.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><p>Nenhuma venda registrada hoje</p></div>`;
+    return;
+  }
+  let html = `<table><thead><tr><th>Produto</th><th>Quantidade</th><th>Usuário</th><th>Valor</th></tr></thead><tbody>`;
+  hoje_vendas.forEach(v => {
+    const prod = produtos.find(p => p.Produto === v.Produto);
+    const val = (parseFloat(v.Quantidade) * (parseFloat(prod?.Preco)||0)).toFixed(2);
+    html += `<tr><td>${v.Produto}</td><td>${v.Quantidade}</td><td>${v.Usuario}</td><td>R$ ${val}</td></tr>`;
+  });
+  el.innerHTML = html + `</tbody></table>`;
+}
+
+// INVENTÁRIO
+async function registrarInventario() {
+  const produto = document.getElementById('inv-produto').value;
+  const estoque = document.getElementById('inv-estoque').value;
+  if (!produto || estoque === '') return alert('Preencha todos os campos.');
+
+  document.getElementById('inv-btn-text').textContent = 'Salvando...';
+  document.getElementById('inv-spinner').style.display = 'block';
+  document.getElementById('inv-error').style.display = 'none';
+  document.getElementById('inv-success').style.display = 'none';
+
+  try {
+    const res = await apiPost({
+      action: 'addInventario',
+      data: { Data: hojeISO(), Produto: produto, Estoque_Real: parseFloat(estoque) }
+    });
+
+    if (res.success) {
+      document.getElementById('inv-success').style.display = 'flex';
+      document.getElementById('inv-estoque').value = '';
+      document.getElementById('inv-produto').value = '';
+      await loadAllData();
+      setTimeout(() => document.getElementById('inv-success').style.display = 'none', 3000);
+    } else {
+      document.getElementById('inv-error').textContent = '❌ ' + (res.error || 'Erro ao registrar.');
+      document.getElementById('inv-error').style.display = 'block';
+    }
+  } catch(e) {
+    document.getElementById('inv-error').textContent = '❌ Erro de conexão.';
+    document.getElementById('inv-error').style.display = 'block';
+  }
+
+  document.getElementById('inv-btn-text').textContent = '📦 Registrar Inventário';
+  document.getElementById('inv-spinner').style.display = 'none';
+}
+
+function renderInvHoje() {
+  const d = hoje();
+  const inv_hoje = inventario.filter(i => normDate(i.Data) === d);
+  const el = document.getElementById('table-inv-hoje');
+  if (!inv_hoje.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><p>Nenhum inventário registrado hoje</p></div>`;
+    return;
+  }
+  let html = `<table><thead><tr><th>Produto</th><th>Estoque Real</th></tr></thead><tbody>`;
+  inv_hoje.forEach(i => {
+    html += `<tr><td>${i.Produto}</td><td>${i.Estoque_Real}</td></tr>`;
+  });
+  el.innerHTML = html + `</tbody></table>`;
+}
+
+// CONTROLE
+async function calcularControle() {
+  showLoading('Calculando controle...');
+  try {
+    const res = await apiPost({ action: 'calcularControle', data: { Data: hojeISO() } });
+    if (res.success) {
+      await loadAllData();
+      showTab('controle');
+    } else {
+      alert('Erro ao calcular: ' + (res.error || 'Tente novamente.'));
+    }
+  } catch(e) {
+    alert('Erro de conexão.');
+  }
+  hideLoading();
+}
+
+function renderControle() {
+  const d = hoje();
+  const ctrl_hoje = controle.filter(c => normDate(c.Data) === d);
+  const el = document.getElementById('table-controle-wrap');
+
+  if (!ctrl_hoje.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><p>Nenhum dado de controle calculado hoje.<br>Clique em "Calcular" para gerar.</p></div>`;
+    return;
+  }
+
+  let html = `<table><thead><tr><th>Produto</th><th>Estoque Ontem</th><th>Vendido</th><th>Reposição</th><th>Esperado</th><th>Real</th><th>Diferença</th></tr></thead><tbody>`;
+  ctrl_hoje.forEach(c => {
+    const dif = parseFloat(c.Diferenca) || 0;
+    const badge = dif < 0 ? `<span class="badge badge-red">${dif}</span>` : dif > 0 ? `<span class="badge badge-yellow">+${dif}</span>` : `<span class="badge badge-green">0</span>`;
+    html += `<tr><td><strong>${c.Produto}</strong></td><td>${c.Estoque_Ontem||0}</td><td>${c.Vendido||0}</td><td>${c.Reposicao||0}</td><td>${c.Esperado||0}</td><td>${c.Real||0}</td><td>${badge}</td></tr>`;
+  });
+  el.innerHTML = html + `</tbody></table>`;
+}
+
+// HISTÓRICO
+function renderHistorico() {
+  // últimas 30 vendas
+  const ult_vendas = [...vendas].reverse().slice(0, 30);
+  const elV = document.getElementById('table-hist-vendas');
+  if (!ult_vendas.length) {
+    elV.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><p>Sem vendas registradas</p></div>`;
+  } else {
+    let html = `<table><thead><tr><th>Data</th><th>Produto</th><th>Qtd</th><th>Usuário</th><th>Valor</th></tr></thead><tbody>`;
+    ult_vendas.forEach(v => {
+      const prod = produtos.find(p => p.Produto === v.Produto);
+      const val = (parseFloat(v.Quantidade) * (parseFloat(prod?.Preco)||0)).toFixed(2);
+      html += `<tr><td><span class="tag-date">${normDate(v.Data)}</span></td><td>${v.Produto}</td><td>${v.Quantidade}</td><td>${v.Usuario}</td><td>R$ ${val}</td></tr>`;
+    });
+    elV.innerHTML = html + `</tbody></table>`;
+  }
+
+  // últimos 30 inventários
+  const ult_inv = [...inventario].reverse().slice(0, 30);
+  const elI = document.getElementById('table-hist-inv');
+  if (!ult_inv.length) {
+    elI.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><p>Sem inventários registrados</p></div>`;
+  } else {
+    let html = `<table><thead><tr><th>Data</th><th>Produto</th><th>Estoque Real</th></tr></thead><tbody>`;
+    ult_inv.forEach(i => {
+      html += `<tr><td><span class="tag-date">${normDate(i.Data)}</span></td><td>${i.Produto}</td><td>${i.Estoque_Real}</td></tr>`;
+    });
+    elI.innerHTML = html + `</tbody></table>`;
+  }
+}
+
+// TABS
+function showTab(tab) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    const tabs = ['dashboard','vendas','inventario','controle','historico'];
+    t.classList.toggle('active', tabs[i] === tab);
+  });
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+
+  if (tab === 'dashboard') renderDashboard();
+  if (tab === 'controle') renderControle();
+}
+</script>
+
+</body>
+</html>
